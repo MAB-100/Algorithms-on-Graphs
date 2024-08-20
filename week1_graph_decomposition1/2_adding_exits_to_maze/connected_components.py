@@ -1,21 +1,33 @@
-#Uses python3
-
-import sys
+# python3
 
 
-def number_of_components(adj):
-    result = 0
-    #write your code here
-    return result
+def explore(adj, visited, x):
+    visited[x] = True
+    for vertex in adj[x]:
+        if not visited[vertex]:
+            explore(adj, visited, vertex)
+
+
+def number_of_components(n_vertices, adj, visited):
+    n_cc = 0
+    for i in range(1, n_vertices + 1):
+        if not visited[i]:
+            explore(adj, visited, i)
+            n_cc += 1
+            # print('vertex:', i, n_cc)
+    return n_cc
+
+
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    data = list(map(int, input.split()))
-    n, m = data[0:2]
-    data = data[2:]
-    edges = list(zip(data[0:(2 * m):2], data[1:(2 * m):2]))
-    adj = [[] for _ in range(n)]
+    n_vertices, n_edges = map(int, input().split())
+    edges = []
+    adjacency_list = [[] for _ in range(n_vertices + 1)]
+    for i in range(n_edges):
+        edges.append(tuple(map(int, input().split())))
     for (a, b) in edges:
-        adj[a - 1].append(b - 1)
-        adj[b - 1].append(a - 1)
-    print(number_of_components(adj))
+        adjacency_list[a].append(b)
+        adjacency_list[b].append(a)
+    visited = [False] * (n_vertices + 1)
+    n_components = number_of_components(n_vertices, adjacency_list, visited)
+    print(n_components)
